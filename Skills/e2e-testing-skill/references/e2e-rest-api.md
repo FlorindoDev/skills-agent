@@ -1,12 +1,23 @@
 # E2E REST API Testing Reference
 
-## Purpose
+Usa questa reference quando devi progettare o scrivere test E2E su endpoint HTTP, payload JSON, token, status code e persistenza.
 
-Nei test E2E REST API l’interfaccia esterna è composta dagli endpoint HTTP.
+## Regola di flessibilita
 
-L’utente finale è un programma, servizio o client che invia richieste reali.
+Questi scenari e controlli non sono esaustivi. Se l'API reale richiede uno scenario E2E diverso, usalo e spiega:
 
-## What to verify
+- quale flusso utente o client copre;
+- perche e piu rilevante degli scenari elencati;
+- quali effetti osservabili verifica;
+- come isola dati, autenticazione e cleanup.
+
+## Scopo
+
+Nei test E2E REST API l'interfaccia esterna e composta dagli endpoint HTTP.
+
+L'utente finale e un programma, servizio o client che invia richieste reali.
+
+## Cosa verificare
 
 Per ogni richiesta verifica:
 
@@ -18,9 +29,10 @@ Per ogni richiesta verifica:
 - body JSON;
 - schema o campi obbligatori;
 - messaggi di errore;
+- autorizzazione;
 - effetti persistenti, se rilevanti.
 
-## Common REST API scenarios
+## Scenari REST API comuni
 
 ### Login riuscito
 
@@ -29,8 +41,8 @@ POST /auth
 Body: { "usr": "gerry", "pwd": "sussman" }
 Expected:
 - 200 OK
-- body contains { "token": string }
-- token is valid or usable in a protected request
+- body contiene { "token": string }
+- token valido o usabile in richiesta protetta
 ```
 
 ### Login fallito
@@ -39,22 +51,22 @@ Expected:
 POST /auth
 Body: { "usr": "gerry", "pwd": "wrong" }
 Expected:
-- 401 Unauthorized, or documented error status
-- no token returned
-- error body matches API specification
+- 401 Unauthorized o status di errore documentato
+- nessun token restituito
+- body errore coerente con specifica API
 ```
 
 ### Creazione risorsa protetta
 
 ```text
-1. Login and obtain token
+1. Login e ottieni token.
 2. POST /todos
    Headers: Authorization: Bearer <TOKEN>
    Body: { "todo": "foobar", "done": false }
 3. Expected:
-   - 200 OK or 201 Created
-   - response contains created resource
-   - resource can be retrieved with GET
+   - 200 OK o 201 Created
+   - risposta contiene risorsa creata
+   - risorsa recuperabile con GET
 ```
 
 ### Lettura risorsa
@@ -63,18 +75,18 @@ Expected:
 GET /todos/:id
 Expected:
 - 200 OK
-- body contains requested resource
+- body contiene risorsa richiesta
 ```
 
 ### Aggiornamento risorsa
 
 ```text
 PUT /todos/:id
-Body: updated fields
+Body: campi aggiornati
 Expected:
 - 200 OK
-- response contains updated values
-- subsequent GET returns updated values
+- risposta contiene valori aggiornati
+- GET successivo restituisce valori aggiornati
 ```
 
 ### Eliminazione risorsa
@@ -82,49 +94,49 @@ Expected:
 ```text
 DELETE /todos/:id
 Expected:
-- 200 OK, 204 No Content, or documented status
-- subsequent GET returns 404 or resource is absent
+- 200 OK, 204 No Content o status documentato
+- GET successivo restituisce 404 o risorsa assente
 ```
 
-## REST API isolation
+## Isolamento REST API
 
-Preferred strategies:
+Strategie preferite:
 
-1. Create data inside the test.
-2. Use unique identifiers.
-3. Delete created data in cleanup.
-4. Reset database between tests when available.
-5. Do not depend on data created by previous tests.
+1. Crea dati dentro il test.
+2. Usa identificatori unici.
+3. Elimina dati creati nel cleanup.
+4. Resetta database tra test se disponibile.
+5. Non dipendere da dati creati da test precedenti.
 
-## REST API test template
+## Template REST API
 
 ```markdown
-### Test [ID]: [scenario name]
+### Test [ID]: [nome scenario]
 
 **Arrange**
-- Prepare base URL.
-- Create or identify test user.
-- Login if endpoint requires authentication.
-- Prepare payload.
+- Prepara base URL.
+- Crea o identifica utente test.
+- Fai login se endpoint richiede autenticazione.
+- Prepara payload.
 
 **Act**
-- Send HTTP request.
+- Invia richiesta HTTP.
 
 **Assert**
-- Check status code.
-- Check response body.
-- Check headers if relevant.
-- Optionally verify persisted state with another request.
+- Verifica status code.
+- Verifica response body.
+- Verifica headers se rilevanti.
+- Verifica stato persistente con altra richiesta se serve.
 
 **Cleanup**
-- Delete created resources.
-- Clear token/session if needed.
+- Elimina risorse create.
+- Cancella token/sessione se necessario.
 ```
 
-## Gotchas
+## Errori comuni
 
-- Do not assert only the status code.
-- Do not reuse the same mutable resource across tests.
-- Do not assume fixed IDs unless the database is reset.
-- Do not let failed cleanup hide the real assertion failure.
-- Prefer explicit setup over relying on production-like existing data.
+- Non verificare solo status code.
+- Non riusare stessa risorsa mutabile tra test.
+- Non assumere ID fissi se database non viene resettato.
+- Non lasciare che cleanup fallito nasconda errore di assert.
+- Preferisci setup esplicito invece di dipendere da dati esistenti.

@@ -1,380 +1,211 @@
 ---
 name: refactoring
-description: Use this skill when reviewing existing code to identify code smells, evaluate cohesion and coupling, and propose safe refactoring steps without changing observable behavior.
+description: >
+  Usa questa skill quando l'utente chiede di analizzare o migliorare codice
+  esistente senza cambiare il comportamento osservabile. Serve per identificare
+  code smells, debito tecnico, problemi di coesione, accoppiamento,
+  responsabilita, testabilita e scegliere refactoring piccoli e sicuri. Input
+  tipici: codice, file, diff, descrizione del comportamento attuale, errori,
+  test disponibili. Output atteso: analisi strutturata, piano di refactoring,
+  patch o modifiche applicate con verifica.
 ---
 
-## Goal
+# Refactoring
 
-Migliorare la struttura interna di codice già esistente senza modificarne il comportamento osservabile.
+## Quando usarla
 
-L’agente deve analizzare il codice, identificare problemi di design o code smells, scegliere refactoring piccoli e sicuri, e spiegare perché ogni modifica migliora la qualità interna.
+Usa questa skill quando l'utente vuole:
 
-La skill deve aiutare l’agente a:
-
-- capire il comportamento attuale prima di cambiare il codice;
-- individuare responsabilità poco chiare;
-- riconoscere problemi di coesione e accoppiamento;
+- migliorare codice gia esistente senza aggiungere funzionalita;
+- rendere il codice piu leggibile, manutenibile e testabile;
 - identificare code smells;
-- scegliere il refactoring più adatto;
-- evitare riscritture inutilmente grandi;
-- preservare il comportamento esterno;
-- verificare il risultato con test quando possibile.
+- ridurre metodi lunghi, classi grandi, duplicazione o codice morto;
+- valutare coesione, accoppiamento, responsabilita e confini delle classi;
+- capire se una classe viola SRP;
+- ridurre catene di chiamate e violazioni della Legge di Demetra;
+- spostare responsabilita nella classe corretta;
+- proporre un piano di refactoring sicuro;
+- applicare piccoli refactoring incrementali;
+- valutare debito tecnico;
+- decidere se un design pattern risolve un problema di design gia presente.
 
-L’obiettivo non è aggiungere nuove funzionalità, ma rendere il codice più leggibile, mantenibile, testabile e meno fragile ai cambiamenti.
+## Quando non usarla
 
-## When to use
+Non usare questa skill quando:
 
-Usa questa skill quando:
+- l'utente chiede di implementare una nuova feature come obiettivo principale;
+- il comportamento osservabile deve cambiare;
+- l'utente chiede solo una spiegazione teorica senza codice;
+- l'utente chiede una review di sicurezza;
+- l'utente chiede performance tuning puro senza problema di design;
+- la richiesta richiede riscrittura totale non giustificata;
+- mancano codice o contesto minimi per capire il comportamento attuale.
 
-- devi analizzare codice esistente;
-- devi migliorare la struttura interna del codice;
-- devi fare refactoring senza cambiare il comportamento osservabile;
-- devi identificare code smells;
-- devi valutare coesione, accoppiamento o responsabilità delle classi;
-- devi capire se una classe viola SRP;
-- devi ridurre duplicazione, metodi lunghi o classi troppo grandi;
-- devi ridurre catene di chiamate, Feature Envy o dipendenze troppo forti;
-- devi proporre un piano di refactoring sicuro;
-- devi applicare piccoli refactoring incrementali;
-- devi valutare il debito tecnico di una parte di codice;
-- devi decidere se introdurre un pattern per risolvere un problema di design già presente.
+## Obiettivo
 
-## Review Procedure
+L'obiettivo della skill e produrre:
 
+- una diagnosi chiara del codice esistente;
+- una lista ordinata di code smells e problemi di design;
+- un piano di refactoring piccolo, incrementale e verificabile;
+- patch che preservano il comportamento osservabile;
+- motivazione di ogni refactoring scelto;
+- indicazione dei test eseguiti o mancanti;
+- rischi residui e assunzioni esplicite.
 
-### 1. Capisci il comportamento attuale
+## Input richiesti
 
-Prima di proporre refactoring, capisci cosa fa il codice.
+L'utente dovrebbe fornire:
 
-Domande:
+- codice o file da analizzare;
+- comportamento atteso o comportamento attuale da preservare;
+- linguaggio, framework e vincoli del progetto;
+- test disponibili o comando di test;
+- obiettivo del refactoring: leggibilita, duplicazione, responsabilita, testabilita, accoppiamento o altro;
+- eventuali limiti: non cambiare API pubbliche, non cambiare schema DB, non toccare file esterni.
 
-- qual è lo scopo del modulo?
-- quali sono gli input?
-- quali sono gli output?
-- quali classi collaborano?
-- quali parti sono business logic?
-- quali parti sono infrastruttura, persistenza, UI o formattazione?
+Se manca un input non essenziale, fai una scelta ragionevole e dichiarala.
 
-Non proporre modifiche strutturali se non hai capito il comportamento.
+Se manca un input essenziale, chiedi chiarimento.
 
----
+## Procedura/workflow
 
-### 2. Identifica responsabilità e confini
+1. Leggi attentamente la richiesta dell'utente.
+2. Identifica il tipo di task: analisi, piano, patch, riduzione smell, separazione responsabilita o verifica.
+3. Controlla se la skill e adatta al caso.
+4. Raccogli codice, test, vincoli e comportamento da preservare.
+5. Prima di cambiare codice, capisci input, output, collaboratori e side effect.
+6. Identifica responsabilita principali, responsabilita secondarie e motivi per cambiare.
+7. Valuta coesione, accoppiamento, Legge di Demetra e Responsibility-Driven Design.
+8. Cerca code smells e classificali per gravita.
+9. Scegli il refactoring piu piccolo che risolve il problema piu importante.
+10. Applica una modifica alla volta quando devi editare codice.
+11. Mantieni invariato il comportamento osservabile.
+12. Usa eventuali file in `references/` solo se servono.
+13. Produci l'output nel formato richiesto.
+14. Esegui i test se disponibili; se non sono disponibili, segnala il rischio.
+15. Fai un controllo finale prima di rispondere.
 
-Per ogni classe importante, scrivi:
+## Regole importanti
 
-```text
-Classe:
-Responsabilità principale:
-Responsabilità secondarie:
-Collaboratori:
-Possibili motivi per cambiare:
-```
+- Mantieni la risposta chiara e ordinata.
+- Non aggiungere sezioni inutili.
+- Non inventare dati mancanti.
+- Segnala sempre eventuali assunzioni.
+- Segui il formato di output richiesto.
+- Usa esempi solo se aiutano davvero.
+- Non rendere la skill troppo generica.
+- Non cambiare comportamento osservabile durante refactoring.
+- Non fare riscritture grandi se bastano piccoli passi.
+- Non modificare codice non correlato.
+- Non introdurre pattern senza prima identificare il problema.
+- Non introdurre astrazioni speculative.
+- Non eliminare codice senza verificare se e usato.
+- Non applicare SRP in modo estremo creando classi inutili.
+- Non sostituire ogni `switch` o `if` con polimorfismo: valuta complessita e stabilita del caso.
+- Non usare Singleton come soluzione predefinita.
+- Se mancano test, evita refactoring invasivi e segnala il rischio.
+- Se i test falliscono dopo il refactoring, considera la modifica non sicura finche non hai capito la causa.
 
-Se trovi più motivi per cambiare, segnala una possibile violazione di SRP.
+## Uso di references
 
----
+Leggi queste reference solo quando utili:
 
-### 3. Controlla coesione
+- `references/design-principles.md`: coesione, accoppiamento, SRP, Legge di Demetra, RDD, decomposizione e design trade-off.
+- `references/code-smells.md`: categorie di code smells e segnali da cercare.
+- `references/refactoring-techniques.md`: tecniche di refactoring e quando applicarle.
+- `references/refactoring-cycle-tests-debt.md`: ciclo di refactoring, test unitari e debito tecnico.
+- `references/patterns-during-refactoring.md`: uso prudente di Factory, DAO/Repository, Observer, Singleton, Iterator e Composite durante refactoring.
 
-Cerca:
-- metodi troppo lunghi;
-- classi troppo grandi;
-- responsabilità mischiate;
-- nomi poco chiari;
-- metodi che richiedono molti commenti;
-- logica non collegata allo scopo principale della classe.
+## Formato di output
 
-Suggerisci:
-- Extract Method;
-- Extract Class;
-- rinomina;
-- spostamento della logica nella classe più coerente.
-- oppure un altro refactoring più adatto, motivando perché è preferibile.
-
----
-
-### 4. Controlla accoppiamento
-
-Cerca:
-- dipendenze dirette da classi concrete;
-- classi che accedono ai dettagli interni di altre;
-- catene di chiamate lunghe;
-- troppi collaboratori;
-- dipendenza diretta dal database in molte classi;
-- metodi che passano troppi dati primitivi.
-
-Suggerisci:
-
-- interfacce;
-- dependency injection;
-- factory solo quando serve;
-- DAO o repository per isolare la persistenza;
-- spostamento della logica vicino ai dati;
-- applicazione della Legge di Demetra.
-- DTO  
-
-
----
-
-### 5. Cerca code smells
-
-Classifica i problemi trovati in queste categorie.
-
-#### Bloaters
-
-Codice cresciuto troppo.
-
-Cerca:
-
-- Long Method;
-- Large Class;
-- Long Parameter List;
-- Data Clumps;
-- Primitive Obsession.
-
-Refactoring tipici:
-- Extract Method;
-- Extract Class;
-- Introduce Parameter Object;
-- Preserve Whole Object;
-- Replace Type Code with Class;
-- Replace Array with Object.
-
----
-
-#### Object-Orientation Abusers
-
-Uso incompleto o scorretto dell'OOP.
-
-Cerca:
-
-- switch complessi;
-- sequenze lunghe di if;
-- Temporary Field;
-- Alternative Classes with Different Interfaces;
-- Refused Bequest.
-
-Refactoring tipici:
-
-- sostituire switch complessi con polimorfismo, se ha senso;
-- Extract Class;
-- Rename Method;
-- Extract Superclass;
-- Replace Inheritance with Delegation.
-
-Nota:
-
-Non eliminare sempre gli switch. Uno switch semplice può essere accettabile. Gli switch usati dentro una Factory possono essere legittimi.
-
----
-
-#### Change Preventers
-
-Codice che rende difficili le modifiche future.
-
-Cerca:
-- Divergent Change;
-- Shotgun Surgery;
-- Parallel Inheritance Hierarchies.
-
-Interpretazione:
+Restituisci il risultato in questo formato:
 
 ```text
-Divergent Change:
-Una classe cambia spesso per motivi diversi.
-Probabile violazione di SRP.
+Titolo:
 
-Shotgun Surgery:
-Una singola modifica richiede piccole modifiche in tante classi.
-Probabile responsabilità dispersa.
+Input usati:
 
-Parallel Inheritance Hierarchies:
-Ogni nuova sottoclasse obbliga a creare una sottoclasse parallela altrove.
-Probabile duplicazione strutturale.
+Risultato:
+
+Assunzioni:
+
+Controllo finale:
 ```
 
-Refactoring tipici:
-
-- Extract Class;
-- Move Method;
-- Move Field;
-- Inline Class;
-- Extract Superclass;
-- delegazione.
-
----
-
-#### Dispensables
-
-Elementi inutili o superflui.
-
-Cerca:
-
-- codice duplicato;
-- codice morto;
-- Lazy Class;
-- Data Class;
-- commenti ridondanti;
-- generalità speculativa.
-
-Refactoring tipici:
-- rimuovere codice morto;
-- Extract Method;
-- Inline Class;
-- Encapsulate Field;
-- rimuovere astrazioni inutilizzate;
-- rinominare metodi invece di commentare troppo.
-
-Regola sui commenti:
+Se il task richiede solo analisi, struttura `Risultato` cosi:
 
 ```text
-Un commento che spiega il "perché" può essere utile.
-Un commento che spiega "cosa fa" codice confuso spesso indica bisogno di refactoring.
+Findings:
+- Problema, file/riga se disponibile, impatto.
+
+Piano di refactoring:
+- Step piccoli e ordinati.
+
+Rischi:
+- Cosa puo rompere il comportamento.
 ```
 
----
-
-#### Couplers
-
-Problemi di accoppiamento eccessivo.
-
-Cerca:
-- Feature Envy;
-- Message Chains;
-- Middle Man;
-- Inappropriate Intimacy;
-- Incomplete Library Class.
-
-Refactoring tipici:
-- Move Method;
-- Move Field;
-- Extract Method;
-- rimuovere intermediari inutili;
-- introdurre metodi più espressivi;
-- local extension o foreign method per librerie incomplete.
-
-
-#### Qualsiasi altro smells
-
-Se trovi altri smell non presenti nella lista, segnalali e spiega perché sono rilevanti.
-
-
-### 6. Scegli il refactoring
-
-Il refactoring deve migliorare la struttura interna senza modificare il comportamento osservabile.
-
-Procedura:
+Se il task richiede modifiche al codice, struttura `Risultato` cosi:
 
 ```text
-1. Identifica il code smell più grave.
-2. Scegli il refactoring più adatto.
-3. Applica una modifica piccola.
-4. Verifica che il comportamento non sia cambiato.
-5. Ripeti.
-```
-
-Non proporre refactoring enormi se bastano piccoli passi.
-
----
-
-### 7. Verifica con test quando possibile
-
-Prima di refactor pesanti, controlla se ci sono test.
-
-Se ci sono test:
-
-```text
-- eseguili prima;
-- applica il refactoring;
-- eseguili dopo;
-- segnala eventuali fallimenti.
-```
-
-Se non ci sono test:
-
-```text
-- segnala il rischio;
-- suggerisci test minimi;
-- evita refactoring troppo invasivi;
-- procedi con modifiche piccole e localizzate.
-```
-
-Regola:
-
-> Più il refactoring è strutturale, più i test diventano importanti.
-
----
-
-
-## Output Format
-
-Se il task richiede solo analisi, restituisci una review.
-
-Se il task richiede modifiche al codice, restituisci: 
-
-```
-## Changes Applied
-
+Modifiche applicate:
 - File modificati.
 - Refactoring applicati.
-- Comportamento preservato.
 
-## Design Improvements
-
+Miglioramenti di design:
 - Coesione migliorata.
 - Accoppiamento ridotto.
-- Responsabilità chiarite.
+- Responsabilita chiarite.
 
-## Verification
-
+Verifica:
 - Test eseguiti.
 - Test mancanti.
 - Rischi residui.
 ```
 
+## Errori da evitare
 
----
+- Confondere refactoring con aggiunta di funzionalita.
+- Cambiare comportamento e chiamarlo refactoring.
+- Proporre pattern prima di aver trovato lo smell.
+- Fare refactor grande senza test.
+- Rendere il codice piu astratto ma meno leggibile.
+- Spezzare classi in troppe classi senza responsabilita reali.
+- Rimuovere codice morto senza cercare riferimenti.
+- Spostare metodi senza capire dove stanno i dati.
+- Usare commenti per nascondere nomi o metodi poco chiari.
+- Ignorare side effect, I/O, persistenza, API pubbliche e compatibilita.
 
-## Constraints
+## Controllo finale
 
-- Non cambiare il comportamento osservabile del programma durante il refactoring.
-- Non proporre design pattern senza aver prima identificato il problema.
-- Non introdurre astrazioni inutili.
-- Non generalizzare per requisiti futuri non confermati.
-- Non modificare codice non correlato.
-- Non riscrivere tutto se basta un refactoring locale.
-- Non confondere qualità del codice con sola performance.
-- Non eliminare codice senza verificare se è usato.
-- Non applicare SRP in modo estremo creando classi troppo piccole e inutili.
-- Non introdurre Singleton come soluzione di default.
-- Non sostituire ogni switch con polimorfismo: valuta prima se lo switch è davvero complesso o fragile.
-- Se mancano test, segnala il rischio prima di refactoring importanti.
+Prima di concludere, verifica:
+
+- il comportamento osservabile e preservato;
+- il refactoring risolve uno smell reale;
+- ogni modifica ha motivo chiaro;
+- ogni classe toccata ha responsabilita piu chiara;
+- coesione non e peggiorata;
+- accoppiamento non e aumentato inutilmente;
+- non sono state introdotte astrazioni speculative;
+- test disponibili sono stati eseguiti;
+- test mancanti o rischi sono dichiarati;
+- output segue il formato richiesto.
 
 ## Quick Checklist
 
-Quando analizzi codice, controlla sempre:
-
 ```text
-[ ] Ogni classe ha una responsabilità chiara?
+[ ] Ho capito comportamento attuale?
+[ ] Ho identificato input, output e side effect?
+[ ] Ho trovato smell reali?
+[ ] Ho scelto refactoring piccolo?
+[ ] Il comportamento osservabile resta uguale?
+[ ] Ogni classe ha responsabilita chiara?
 [ ] Ogni metodo fa una cosa sola?
-[ ] I nomi sono espressivi?
-[ ] Ci sono metodi troppo lunghi?
-[ ] Ci sono classi troppo grandi?
-[ ] Ci sono liste di parametri troppo lunghe?
-[ ] Ci sono gruppi di dati ripetuti?
-[ ] Ci sono primitive che dovrebbero essere oggetti?
-[ ] Ci sono switch/if complessi?
-[ ] Ci sono catene tipo a.getB().getC()?
-[ ] Una modifica richiede cambiamenti in tanti file?
-[ ] Una classe cambia per motivi diversi?
-[ ] Ci sono dipendenze concrete evitabili?
-[ ] La business logic accede direttamente al database?
-[ ] Ci sono commenti che nascondono codice poco chiaro?
-[ ] Ci sono duplicazioni?
-[ ] Ci sono classi inutili o troppo generiche?
-[ ] I pattern usati risolvono davvero un problema?
-[ ] Esistono test prima di refactor importanti?
+[ ] Coesione migliorata?
+[ ] Accoppiamento ridotto o almeno non peggiorato?
+[ ] Catene tipo a.getB().getC() evitate?
+[ ] Pattern introdotti solo se necessari?
+[ ] Test eseguiti o rischio dichiarato?
+[ ] Debito tecnico residuo dichiarato?
 ```
-
-

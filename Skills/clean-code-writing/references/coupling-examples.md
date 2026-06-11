@@ -1,5 +1,9 @@
 
-Segnali negativi:
+# Coupling examples
+
+Usa questa reference quando devi ridurre dipendenze concrete o spiegare perche una classe e troppo legata a un'altra.
+
+## Dipendenza concreta
 
 ```java
 class Traveler {
@@ -44,3 +48,18 @@ Vantaggio:
 Traveler dipende da un'interfaccia, non da una classe concreta.
 Questo abbassa l'accoppiamento e anticipa il cambiamento.
 ```
+
+## Quando introdurre l'interfaccia
+
+Introduci un'interfaccia quando:
+
+- esistono piu implementazioni reali o molto probabili;
+- vuoi testare il client con un fake/mock;
+- vuoi isolare una dipendenza esterna;
+- il costo di cambiare implementazione concreta sarebbe alto.
+
+Evita l'interfaccia quando:
+
+- c'e una sola implementazione stabile;
+- l'interfaccia ripete esattamente la classe concreta senza aggiungere flessibilita;
+- nasce solo per "fare clean code" senza problema reale.

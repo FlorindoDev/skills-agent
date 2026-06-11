@@ -1,391 +1,196 @@
 ---
-
 name: clean-code-writing
-
-description: Use this skill when writing new code, implementing features, adding classes or methods, designing modules, or modifying existing code while keeping it clean, cohesive, low-coupled, maintainable, and testable.
-
+description: >
+  Usa questa skill quando l'utente chiede di scrivere nuovo codice, implementare
+  feature, aggiungere o modificare classi/metodi/moduli, progettare piccole
+  architetture interne o migliorare codice mentre resta pulito, coeso, poco
+  accoppiato, mantenibile e testabile. Serve per prevenire debito tecnico
+  durante l'implementazione. Input tipici: richiesta utente, codice esistente,
+  requisiti, vincoli tecnici, file di progetto. Output atteso: codice o patch
+  con scelte di design, responsabilita, testabilita, rischi e controllo finale.
 ---
 
-# Code Quality Review Skill
+# Clean Code Writing
 
-## Goal
+## Quando usarla
 
-Scrivere codice nuovo che sia pulito, leggibile, mantenibile, testabile e facile da modificare.
+Usa questa skill quando l'utente vuole:
 
-L’agente deve produrre codice che non si limiti a funzionare, ma che rispetti buoni principi di progettazione:
+- scrivere nuovo codice pulito e mantenibile;
+- implementare una nuova feature;
+- aggiungere classi, metodi, moduli o componenti;
+- modificare codice esistente senza peggiorare il design;
+- decidere dove collocare una responsabilita;
+- progettare una piccola architettura interna;
+- scegliere tra classe concreta, interfaccia, dependency injection, DTO, DAO/Repository, Factory o altro pattern;
+- ridurre accoppiamento inutile;
+- aumentare coesione e chiarezza delle responsabilita;
+- evitare code smells, generalita speculativa e debito tecnico;
+- scrivere codice facile da testare.
 
-- alta coesione;
-- basso accoppiamento;
-- responsabilità chiare;
-- metodi piccoli e nominati bene;
-- classi con un solo motivo per cambiare;
-- dipendenze facili da sostituire o testare;
-- niente astrazioni inutili;
-- niente pattern usati senza un problema reale.
+## Quando non usarla
 
-L’obiettivo principale è prevenire debito tecnico mentre si implementano nuove funzionalità.
+Non usare questa skill quando:
 
----
+- l'utente chiede solo una spiegazione teorica senza codice o progettazione;
+- l'utente chiede solo refactoring di codice esistente senza aggiungere comportamento;
+- l'utente chiede una review generale senza scrivere codice;
+- il task riguarda sicurezza, performance avanzata, UI design o deployment come obiettivo principale;
+- la richiesta e troppo generica e non contiene un obiettivo implementativo chiaro.
 
-## When to use this skill
+## Obiettivo
 
-Usa questa skill quando il task riguarda:
+L'obiettivo della skill e produrre:
 
-- scrittura di nuovo codice;
-- implementazione di una nuova feature;
-- aggiunta di classi, metodi, moduli o componenti;
-- modifica di codice esistente per aggiungere nuovo comportamento;
-- scelta di dove collocare una nuova responsabilità;
-- progettazione di una piccola architettura interna;
-- scelta tra classe concreta, interfaccia, dependency injection, DTO, DAO/Repository o Factory;
-- scrittura di codice che deve essere facile da testare;
-- prevenzione di code smells, accoppiamento inutile o generalità speculativa.
+- codice funzionante, leggibile, coeso e mantenibile;
+- patch coerenti con lo stile del progetto;
+- classi con responsabilita chiare e un solo motivo principale per cambiare;
+- metodi piccoli, nominati bene e facili da testare;
+- dipendenze limitate e sostituibili;
+- design che anticipa il cambiamento senza introdurre astrazioni inutili;
+- output finale con scelte di design, funzionalita, testabilita, rischi e controllo finale.
 
----
+## Input richiesti
 
-## Workflow
+L'utente dovrebbe fornire:
 
-Quando scrivi codice nuovo, segui questa sequenza:
+- richiesta funzionale o comportamento atteso;
+- file o porzioni di codice da modificare;
+- linguaggio, framework e vincoli del progetto;
+- formato di output desiderato, se diverso dalla patch;
+- eventuali requisiti non funzionali importanti: performance, affidabilita, costi, manutenibilita, usabilita.
 
-1. Identifica la responsabilità principale del codice da aggiungere.
-2. Cerca nel progetto codice simile e segui lo stile esistente se è corretto.
-3. Decidi dove collocare la nuova responsabilità.
-4. Scrivi la soluzione più semplice che rispetta coesione e basso accoppiamento.
-5. Evita astrazioni, pattern o interfacce se non risolvono un problema reale.
-6. Rendi il codice testabile separando logica pura, I/O e dipendenze esterne.
-7. Prima di finalizzare, controlla la checklist della skill.
+Se manca un input non essenziale, fai una scelta ragionevole e dichiarala.
 
+Se manca un input essenziale, chiedi chiarimento.
 
-## Core Principles
+## Procedura/workflow
 
-### 1. Alta coesione
+1. Leggi attentamente la richiesta dell'utente.
+2. Identifica il tipo di task: nuova feature, nuovo modulo, modifica puntuale, scelta di design o codice testabile.
+3. Controlla se la skill e adatta al caso.
+4. Raccogli gli input disponibili nel codice esistente.
+5. Cerca nel progetto codice simile e segui lo stile gia presente se e corretto.
+6. Identifica la responsabilita principale del codice da aggiungere.
+7. Decidi dove collocare la responsabilita usando alta coesione e basso accoppiamento.
+8. Valuta i design goal rilevanti: performance, affidabilita, costi, manutenibilita, usabilita.
+9. Esplicita eventuali trade-off di design quando influenzano la soluzione.
+10. Scrivi la soluzione piu semplice che soddisfa i requisiti.
+11. Usa interfacce, Factory, DAO/Repository, Observer, Iterator, Composite o altri pattern solo se risolvono un problema reale.
+12. Separa logica pura, I/O e dipendenze esterne per rendere il codice testabile.
+13. Usa eventuali file in `references/` solo se servono.
+14. Produci l'output nel formato richiesto.
+15. Esegui o proponi test coerenti con il rischio della modifica.
+16. Fai un controllo finale prima di rispondere.
 
-Una classe o un metodo deve avere responsabilità strettamente correlate tra loro.
+## Regole importanti
 
-Controlla sempre:
+- Mantieni la risposta chiara e ordinata.
+- Non aggiungere sezioni inutili.
+- Non inventare dati mancanti.
+- Segnala sempre eventuali assunzioni.
+- Segui il formato di output richiesto.
+- Usa esempi solo se aiutano davvero.
+- Non rendere la skill troppo generica.
+- Preferisci alta coesione: ogni metodo deve fare una cosa, ogni classe deve rappresentare un concetto chiaro.
+- Applica SRP: una responsabilita e un motivo per cambiare.
+- Preferisci basso accoppiamento: evita dipendenze concrete inutili e accesso a dettagli interni di altre classi.
+- Applica la Legge di Demetra: evita catene tipo `a.getB().getC().doX()`.
+- Usa Responsibility-Driven Design: ragiona in termini di classe, responsabilita e collaboratori.
+- Se una classe possiede i dati, di solito dovrebbe anche gestire la logica strettamente legata a quei dati.
+- Evita commenti che compensano nomi poveri o metodi troppo lunghi.
+- Evita liste di parametri lunghe: valuta Parameter Object o Preserve Whole Object.
+- Evita primitive obsession quando un dato di dominio ha regole proprie.
+- Evita generalita speculativa: rendere il codice modificabile non significa renderlo astratto senza motivo.
+- Non accedere direttamente al database dalla business logic se esiste o serve un livello di persistenza.
+- Evita Singleton come scelta predefinita: puo mascherare cattivo design e complicare test.
+- Mantieni il comportamento esistente quando il task non richiede di cambiarlo.
 
-- il metodo fa una sola cosa?
-- la classe rappresenta un singolo concetto?
-- le responsabilità sono mirate allo stesso obiettivo?
-- il nome della classe o del metodo descrive chiaramente ciò che fa?
+## Uso di references
 
-Se un metodo o una classe fa troppe cose, probabilmente viola la coesione.
+Leggi queste reference solo quando utili:
 
-Segnali negativi:
+- `references/design-principles.md`: coesione, SRP, accoppiamento, Legge di Demetra, Responsibility-Driven Design, decomposizione e trade-off.
+- `references/smells-refactoring.md`: code smells, debito tecnico, ciclo di refactoring e refactoring tipici.
+- `references/coupling-examples.md`: esempio `Traveler`/`Vehicle` per ridurre dipendenza concreta.
+- `references/Legge di Demetra-examples.md`: esempi di catene di chiamate e incapsulamento.
 
-- metodo troppo lungo;
-- classe troppo grande;
-- nome generico;
-- commenti necessari per spiegare troppe sezioni;
-- responsabilità non correlate nella stessa classe.
+## Formato di output
 
-Refactoring suggeriti:
-
-- Extract Method;
-- Extract Class;
-- Extract Subclass;
-- rinominare metodi o classi;
-- spostare responsabilità nella classe corretta.
-
----
-
-### 2. Single Responsibility Principle
-
-Una classe dovrebbe avere una sola responsabilità.
-
-Regola pratica:
-
-> Una responsabilità è un motivo per cambiare.
-
-Controlla:
-
-- questa classe cambia per più motivi diversi?
-- contiene logica di business, accesso ai dati, formattazione e stampa insieme?
-- gestisce responsabilità che dovrebbero stare in classi diverse?
-- una modifica piccola obbliga a cambiare una classe enorme?
-
-Se sì, suggerisci una decomposizione.
-
-Esempio di ragionamento:
+Restituisci il risultato in questo formato:
 
 ```text
-Problema:
-La classe Report carica dati, formatta il report e lo stampa.
+Titolo:
 
-Violazione:
-Ha almeno tre motivi per cambiare:
-1. cambia il modo in cui recupero i dati;
-2. cambia il formato del report;
-3. cambia il modo in cui stampo.
+Input usati:
 
-Soluzione:
-Separare in:
-- Report
-- ReportFormatter
-- ReportPrinter
-- eventualmente ReportRepository/DataAccess
+Risultato:
+
+Scelte di design:
+
+Funzionalita:
+
+Testabilita:
+
+Rischi:
+
+Assunzioni:
+
+Controllo finale:
 ```
 
-
----
-
-### 3. Basso accoppiamento
-
-Il codice deve evitare dipendenze troppo forti tra classi concrete.
-
-Controlla:
-
-- una classe istanzia direttamente un'altra classe concreta?
-- una classe conosce troppi dettagli interni di un'altra?
-- cambiare una classe obbliga a modificarne molte altre?
-- una classe non può essere riusata senza portarsi dietro troppe dipendenze?
-- il codice dipende da implementazioni concrete invece che da interfacce?
-
----
-
-### 4. Legge di Demetra
-
-Evita catene di chiamate lunghe.
-
-Regola:
-
-Un metodo dovrebbe comunicare solo con:
-- this;
-- attributi di this;
-- parametri del metodo;
-- oggetti creati dentro il metodo.
-
-
----
-
-### 5. Responsibility-Driven Design
-
-Quando analizzi una classe, ragiona sempre in termini di:
-
-```text
-Classe
-Responsabilità
-Collaboratori
-```
-
-Per ogni classe chiediti:
-
-```text
-Nome classe:
-Responsabilità:
-Collaboratori:
-```
-
-Se non riesci a specificare chiaramente le responsabilità, probabilmente c'è un errore di design.
-
-Se una classe ha troppi collaboratori, probabilmente è troppo accoppiata o fa troppe cose.
-
-Template di analisi:
-
-```text
-Classe: OrderService
-
-Responsabilità:
-- validare un ordine;
-- calcolare il totale;
-- inviare l'ordine al repository.
-
-Collaboratori:
-- OrderRepository;
-- PaymentService;
-- DiscountPolicy.
-
-Valutazione:
-Se OrderService inizia anche a formattare PDF, mandare email e gestire logica UI, allora sta violando SRP.
-```
-
-### 6. Scrivi metodi piccoli e nominati bene
-
-Quando scrivi un metodo:
-
-- deve avere uno scopo chiaro;
-- deve avere un nome comunicativo;
-- deve evitare troppe istruzioni;
-- deve evitare troppi livelli di annidamento;
-- deve evitare commenti necessari per capire il “cosa”.
-
-Se un metodo diventa lungo, dividilo subito con Extract Method.
-
----
-
-### 7. Evita liste di parametri lunghe
-
-Se un metodo riceve troppi parametri, valuta:
-- Introduce Parameter Object;
-- Preserve Whole Object;
-- passare un oggetto che contiene quei dati;
-- spostare il metodo nella classe che possiede quei dati.
-
-Sbagliato:
-
-```java
-createUser(String name, String surname, String email, String phone, String city)
-```
-
-Meglio:
-
-```java
-createUser(UserData data)
-```
-
----
-
-### 8. Evita primitive obsession
-
-Non usare sempre `String`, `int`, `boolean` per concetti importanti del dominio.
-
-Esempio:
-
-```java
-String phoneNumber;
-String email;
-int role;
-```
-
-Meglio, quando ha senso:
-
-```java
-PhoneNumber phoneNumber;
-Email email;
-UserRole role;
-```
-
-Regola:
-
-```text
-Se un dato ha regole proprie, probabilmente merita un tipo proprio.
-```
-
----
-
-### 9. Non introdurre generalità speculativa
-
-Non creare astrazioni solo perché “potrebbero servire in futuro”.
-
-Evita:
-- interfacce con una sola implementazione senza motivo;
-- factory inutili;
-- classi astratte non necessarie;
-- configurazioni troppo generiche;
-- pattern usati solo per eleganza.
-
-Regola:
-
-```text
-Anticipare il cambiamento significa rendere il codice modificabile,
-non renderlo inutilmente astratto.
-```
-
----
-
-### 10. Usa i design pattern solo se servono
-
-Prima di usare un pattern, verifica:
-
-```text
-Problema reale:
-Perché serve un pattern:
-Alternative più semplici:
-Pattern scelto:
-Costo in complessità:
-```
-
-Usa Factory se vuoi separare creazione e uso degli oggetti.
-
-Usa DAO/Repository se vuoi isolare la persistenza.
-
-Usa Observer se più oggetti devono reagire a un cambiamento di stato.
-
-Evita Singleton come soluzione predefinita.
-
----
-
-### 11. Scrivi codice testabile
-
-Mentre scrivi codice nuovo:
-
-- separa logica pura da I/O;
-- evita dipendenze globali;
-- evita static non necessari;
-- evita Singleton se rende difficile il mock;
-- inietta dipendenze esterne;
-- crea metodi piccoli verificabili;
-- aggiungi test per comportamento importante.
-
----
-
-## Constraints
-
-- Non scrivere codice inutilmente complesso.
-- Non introdurre pattern senza problema reale.
-- Non mischiare responsabilità diverse.
-- Non accedere direttamente al database dalla business logic se esiste un livello di persistenza.
-- Non usare commenti per compensare nomi poco chiari.
-- Non creare classi troppo piccole e inutili solo per applicare SRP.
-- Non cambiare architettura esistente senza motivo.
-- Segui lo stile già presente nel progetto.
-
----
-
-## Output Format
-
-Quando usi questa skill per scrivere codice, restituisci:
-
-```md
-## Implementazione
-
-Descrizione breve di cosa è stato implementato.
-
-## Scelte di design
-
-- Responsabilità delle classi create/modificate.
-- Come è stata mantenuta alta la coesione.
-- Come è stato ridotto l’accoppiamento.
-- Pattern usati, se presenti, e perché.
-
-## funzionalità
-descrivere funzionalità di ogni funzione/classe scritta e scrivere se è possibile: 
-
-- input
-- output
-- Dominio dei vari input 
-- eventuali vincoli
-- Cosa dovrebbe fare
-
-## Codice
-
-Codice prodotto o patch.
-
-## Testabilità
-
-- Come testare il codice.
-- Eventuali test aggiunti.
-- Eventuali casi limite da coprire.
-
-## Rischi
-
-- Debito tecnico introdotto, se presente.
-- Alternative non scelte.
-```
-
----
+Quando produci codice, includi:
+
+- cosa e stato implementato;
+- responsabilita delle classi create o modificate;
+- come e stata mantenuta alta la coesione;
+- come e stato ridotto l'accoppiamento;
+- pattern usati, se presenti, e perche;
+- input, output, dominio degli input, vincoli e comportamento delle funzioni principali;
+- test eseguiti o test da aggiungere;
+- debito tecnico introdotto, se presente;
+- alternative non scelte quando rilevanti.
+
+## Errori da evitare
+
+- Usare un design pattern solo perche conosciuto.
+- Creare interfacce con una sola implementazione senza motivo reale.
+- Mischiare business logic, accesso ai dati, formattazione, stampa e UI nella stessa classe.
+- Creare classi troppo piccole e inutili solo per applicare SRP.
+- Lasciare metodi lunghi con commenti che spiegano il "cosa".
+- Passare molti parametri quando un oggetto del dominio e piu chiaro.
+- Manipolare dati interni di altri oggetti invece di chiedere all'oggetto di fare il lavoro.
+- Aggiungere astrazioni speculative per requisiti futuri non richiesti.
+- Cambiare architettura esistente senza motivo.
+- Ignorare test e casi limite quando la modifica tocca comportamento importante.
+
+## Controllo finale
+
+Prima di concludere, verifica:
+
+- la modifica soddisfa la richiesta;
+- il codice segue lo stile del progetto;
+- ogni classe ha responsabilita chiara;
+- ogni metodo fa una cosa riconoscibile;
+- le dipendenze concrete sono giustificate;
+- le catene di chiamate lunghe sono evitate;
+- le astrazioni introdotte risolvono un problema reale;
+- il codice e testabile;
+- eventuali trade-off sono dichiarati;
+- non e stato introdotto debito tecnico non segnalato.
 
 ## Quick Checklist
 
 ```text
-[ ] La classe ha una responsabilità chiara?
+[ ] La classe ha una responsabilita chiara?
 [ ] Il metodo fa una sola cosa?
 [ ] I nomi sono espressivi?
 [ ] Ho evitato dipendenze concrete inutili?
 [ ] Ho evitato catene di chiamate lunghe?
 [ ] Ho evitato parametri troppo numerosi?
 [ ] Ho evitato primitive obsession?
-[ ] Ho evitato generalità speculativa?
-[ ] Il codice è testabile?
+[ ] Ho evitato generalita speculativa?
+[ ] Il codice e testabile?
 [ ] Il pattern usato risolve davvero un problema?
+[ ] Eventuale debito tecnico e dichiarato?
 ```

@@ -1,10 +1,21 @@
 # E2E Web App Testing Reference
 
-## Purpose
+Usa questa reference quando devi progettare o scrivere test E2E su browser, pagine, form, click, redirect, selettori e UI visibile.
 
-Nei test E2E Web App l’interfaccia esterna è la pagina web.
+## Regola di flessibilita
 
-L’utente finale è una persona che usa il browser.
+Questi scenari e controlli non sono esaustivi. Se l'app reale richiede uno scenario E2E diverso, usalo e spiega:
+
+- quale flusso utente copre;
+- perche e piu rilevante degli scenari elencati;
+- quale risultato visibile verifica;
+- come gestisce stato browser, dati di test e cleanup.
+
+## Scopo
+
+Nei test E2E Web App l'interfaccia esterna e la pagina web.
+
+L'utente finale e una persona che usa il browser.
 
 Il test deve simulare azioni reali:
 
@@ -14,20 +25,20 @@ Il test deve simulare azioni reali:
 - verificare redirect;
 - verificare testo o componenti visibili.
 
-## What to verify
+## Cosa verificare
 
 Per ogni scenario verifica:
 
 - pagina iniziale;
 - elementi interattivi;
 - input inseriti;
-- azione dell’utente;
+- azione utente;
 - redirect o cambio pagina;
 - messaggi visibili;
 - aggiornamento della UI;
 - persistenza dopo refresh, se rilevante.
 
-## Common Web App scenarios
+## Scenari web app comuni
 
 ### Login riuscito
 
@@ -84,27 +95,27 @@ Per ogni scenario verifica:
    - protected page is no longer accessible
 ```
 
-## Web App isolation
+## Isolamento web app
 
-Before or after each test:
+Prima o dopo ogni test:
 
-- clear cookies;
-- clear local storage;
-- clear session storage;
-- reset database or delete created resources;
-- create unique test data;
-- avoid depending on previous browser state.
+- pulisci cookie;
+- pulisci local storage;
+- pulisci session storage;
+- resetta database o elimina risorse create;
+- crea dati unici;
+- evita dipendenza da stato browser precedente.
 
-## Selector guidance
+## Guida selettori
 
-Prefer stable selectors:
+Preferisci selettori stabili:
 
 1. role/name selectors;
 2. labels;
-3. test ids, if project convention supports them;
-4. avoid brittle CSS selectors tied to layout.
+3. test ids, se il progetto li usa;
+4. evita selettori CSS fragili legati al layout.
 
-Examples:
+Esempi:
 
 ```text
 getByRole("button", { name: "Login" })
@@ -112,45 +123,45 @@ getByLabel("Username")
 getByText("Hi, Gerry")
 ```
 
-## Waiting guidance
+## Guida attese
 
-Avoid fixed sleeps.
+Evita sleep fissi.
 
-Prefer waiting for observable conditions:
+Preferisci aspettare condizioni osservabili:
 
-- page URL changed;
-- element visible;
-- response completed;
-- loading indicator disappeared;
-- item appeared in list.
+- URL pagina cambiato;
+- elemento visibile;
+- response completata;
+- loading indicator sparito;
+- item apparso in lista.
 
-## Web App test template
+## Template web app
 
 ```markdown
-### Test [ID]: [scenario name]
+### Test [ID]: [nome scenario]
 
 **Arrange**
-- Reset browser state.
-- Prepare data or create user.
-- Visit starting page.
+- Resetta stato browser.
+- Prepara dati o crea utente.
+- Visita pagina iniziale.
 
 **Act**
-- Perform user actions: fill, click, navigate.
+- Esegui azioni utente: fill, click, navigate.
 
 **Assert**
-- Verify visible UI result.
-- Verify redirect if relevant.
-- Verify persistence if relevant.
+- Verifica risultato visibile nella UI.
+- Verifica redirect se rilevante.
+- Verifica persistenza se rilevante.
 
 **Cleanup**
-- Delete created data.
-- Clear browser state.
+- Elimina dati creati.
+- Pulisci stato browser.
 ```
 
-## Gotchas
+## Errori comuni
 
-- Do not use arbitrary sleep unless unavoidable.
-- Do not rely on test execution order.
-- Do not use selectors that break when layout changes.
-- Do not skip cleanup for created entities.
-- Do not check only that a button was clicked: check the user-visible result.
+- Non usare sleep arbitrari se evitabili.
+- Non dipendere da ordine di esecuzione.
+- Non usare selettori che si rompono quando cambia layout.
+- Non saltare cleanup per entita create.
+- Non controllare solo che un bottone sia stato cliccato: verifica risultato visibile.

@@ -1,304 +1,199 @@
 ---
-
 name: blackbox-testing
-
-description: Progetta casi di test black-box modulari a partire da requisiti funzionali, firme di funzioni, API o componenti. Usa questa skill per classi di equivalenza, N-WECT, R-WECT, ACoC, boundary value testing e robustness testing.
-
+description: >
+  Usa questa skill quando l'utente chiede di progettare test black-box a
+  partire da requisiti funzionali, firme di funzioni, API, form, componenti o
+  descrizioni di comportamento atteso. Serve per identificare funzioni
+  testabili, parametri, classi di equivalenza, valori limite e casi di test
+  senza usare la struttura interna del codice. Input tipici: requisiti, firma
+  di funzione, API, dominio input, output attesi, vincoli. Output atteso:
+  classi di equivalenza, criterio scelto, casi di test concreti, expected
+  result e assunzioni.
 ---
 
-# Black-Box Test Design Skill
+# Black-Box Testing
 
-## Goal
+## Quando usarla
 
-Aiutare l’agente a progettare casi di test black-box partendo da requisiti funzionali, firme di funzioni, API, componenti o descrizioni di comportamento atteso.
-
-La skill deve produrre una suite di test ragionata, modulare e adattabile alla tecnica richiesta dall’utente: classi di equivalenza, N-WECT, R-WECT, ACoC, boundary value testing, robustness testing o combinazioni di queste.
-
-## When to use
-
-Usa questa skill quando l’utente chiede di:
+Usa questa skill quando l'utente vuole:
 
 - progettare test black-box;
-- creare casi di test a partire da requisiti funzionali;
-- testare una funzione, API, form, servizio o componente senza basarsi sulla struttura interna del codice;
+- creare casi di test da requisiti funzionali;
+- testare funzione, API, form, servizio o componente senza guardare implementazione interna;
 - individuare classi di equivalenza;
-- scegliere una tecnica di testing come N-WECT, R-WECT, ACoC, boundary values o robustness;
+- scegliere o applicare N-WECT, R-WECT, ACoC/N-SECT, Boundary Value Testing, Robustness Testing o Pairwise;
 - trasformare combinazioni astratte di classi in input concreti;
-- scrivere test unitari o casi JUnit/pytest partendo da una progettazione black-box.
+- costruire una tabella di test con input, expected result e motivazione;
+- scrivere test implementabili con struttura Arrange, Act, Assert partendo da progettazione black-box.
+
+## Quando non usarla
+
+Non usare questa skill quando:
+
+- l'utente chiede testing white-box come branch coverage, path coverage, condition coverage o CFG;
+- l'utente vuole analizzare la struttura interna del codice come criterio principale;
+- l'utente chiede solo implementazione di test senza progettazione dei casi;
+- l'utente chiede test end-to-end completi su browser o API reali;
+- mancano requisiti, firma, input osservabili o comportamento atteso minimi;
+- la richiesta e troppo generica per derivare input e output attesi.
+
+## Obiettivo
+
+L'obiettivo della skill e produrre:
+
+- una progettazione black-box ordinata;
+- funzioni o comportamenti testabili;
+- parametri osservabili e domini;
+- classi di equivalenza valide e non valide;
+- criterio di test motivato;
+- casi di test concreti;
+- expected result chiari;
+- assunzioni dichiarate;
+- limiti della suite dichiarati.
+
+## Input richiesti
+
+L'utente dovrebbe fornire:
+
+- requisiti funzionali o comportamento atteso;
+- firma della funzione, endpoint API, form o componente;
+- parametri di input osservabili;
+- dominio valido e vincoli;
+- output atteso o regole di validazione;
+- tecnica richiesta, se gia scelta;
+- formato finale desiderato, se diverso dalla tabella.
+
+Se manca un input non essenziale, fai una scelta ragionevole e dichiarala.
+
+Se manca un input essenziale, chiedi chiarimento.
+
+## Procedura/workflow
+
+1. Leggi attentamente la richiesta dell'utente.
+2. Identifica il tipo di task: classi di equivalenza, criterio combinatorio, boundary, robustness, suite completa o test implementabili.
+3. Controlla se la skill e adatta al caso.
+4. Raccogli requisiti, firma, parametri, dominio, vincoli e output attesi.
+5. Identifica le funzioni o caratteristiche testabili.
+6. Trova tutti i parametri osservabili che influenzano comportamento.
+7. Partiziona il dominio degli input in classi di equivalenza disgiunte e rilevanti.
+8. Distingui classi valide, non valide e casi limite.
+9. Scegli il criterio piu adatto: N-WECT, R-WECT, ACoC/N-SECT, Boundary, Robustness, Pairwise o altro criterio motivato.
+10. Calcola o stima numero di test quando la tecnica lo richiede.
+11. Raffina combinazioni astratte in input concreti.
+12. Definisci expected result per ogni test.
+13. Usa eventuali file in `references/` solo se servono.
+14. Produci l'output nel formato richiesto.
+15. Fai un controllo finale prima di rispondere.
+
+## Regole importanti
+
+- Mantieni la risposta chiara e ordinata.
+- Non aggiungere sezioni inutili.
+- Non inventare requisiti mancanti.
+- Segnala sempre eventuali assunzioni.
+- Segui il formato di output richiesto.
+- Usa esempi solo se aiutano davvero.
+- Non rendere la skill troppo generica.
+- Non progettare test partendo dalla logica interna del codice.
+- Non promettere complete coverage per moduli non banali.
+- Preferisci functionality-based approach quando hai requisiti o regole di dominio.
+- Usa signature-based approach quando hai solo firma o parametri esposti.
+- In R-WECT, un test non valido deve contenere un solo valore non valido.
+- In Boundary Value Testing varia una variabile alla volta e tieni le altre nominali.
+- In Robustness Testing includi anche valori appena fuori limite.
+- In ACoC/N-SECT avvisa se il prodotto cartesiano causa combinatorial explosion.
+- Ogni test deve avere input concreti ed expected result verificabile.
+- Se una tecnica non e nella lista ma e piu adatta, usala e motiva la scelta.
+
+## Uso di references
+
+Leggi queste reference solo quando utili:
+
+- `references/blackbox-workflow.md`: concetti base, complete coverage, black-box workflow, parameter identification, equivalence classes, signature/functionality-based approach.
+- `references/test-criteria.md`: N-WECT, R-WECT, ACoC/N-SECT, Pairwise, Boundary Value Testing, Robustness Testing e formule.
+- `references/output-template.md`: template di output per classi, suite completa, test AAA e tabella compatta.
+
+## Formato di output
+
+Restituisci il risultato in questo formato:
+
+```text
+Titolo:
+
+Input usati:
+
+Risultato:
+
+Assunzioni:
 
-Non usare questa skill per testing white-box, code coverage strutturale, branch coverage, path coverage o analisi del CFG, salvo che l’utente chieda esplicitamente un confronto.
-
-## Core principle
-
-Il black-box testing verifica il comportamento esterno del sistema rispetto ai requisiti funzionali.
-
-Non progettare i test partendo dalla struttura interna del codice. Usa invece:
-
-1. requisiti funzionali;
-2. input disponibili;
-3. output attesi;
-4. vincoli del dominio;
-5. casi validi, non validi e limite.
-
-## Default behavior
-
-Se l’utente non specifica una tecnica, usa questo default:
-
-1. Functionality-based approach se sono presenti requisiti o regole di dominio.
-2. Signature-based approach se è disponibile solo la firma della funzione o dell’API.
-3. R-WECT come criterio predefinito quando sono presenti input non validi.
-4. N-WECT se il sistema è semplice e gli input sembrano indipendenti.
-5. Boundary Value Testing se ci sono intervalli numerici, lunghezze, date, limiti o soglie.
-6. ACoC solo se il numero di combinazioni è piccolo o se l’utente vuole copertura forte.
-
-Non presentare tutte le tecniche come equivalenti. Scegli un default motivato e indica brevemente le alternative.
-
-## Workflow
-
-### 1. Identify testable functions
-
-Individua cosa deve essere testato.
-
-Per ogni funzione, endpoint, form o componente, ricava:
-
-- nome della funzionalità;
-- comportamento atteso;
-- input osservabili;
-- output atteso;
-- errori o risposte non valide attese;
-- precondizioni rilevanti.
-
-Non analizzare la logica interna del codice se non serve a capire la firma o gli input esposti.
-
-### 2. Find all parameters
-
-Elenca tutti i parametri che possono influenzare il comportamento.
-
-Includi:
-
-- parametri formali della funzione;
-- campi di un form;
-- query/body/path parameters di un endpoint;
-- file, configurazioni o database se sono input osservabili;
-- stato esterno rilevante se influenza il comportamento.
-
-Per ogni parametro indica:
-
-- tipo;
-- dominio ammesso;
-- vincoli;
-- valori validi;
-- valori non validi;
-- valore nominale, se esiste.
-
-### 3. Partition the input domain
-
-Dividi ogni dominio in classi di equivalenza.
-
-Ogni classe deve rappresentare un gruppo di valori che il sistema dovrebbe trattare allo stesso modo.
-
-Per intervalli ordinati usa almeno:
-
-- valori validi interni;
-- valori sotto il minimo;
-- valori sopra il massimo;
-- eventuali sottointervalli con significato diverso.
-
-Per enumerazioni usa:
-
-- una classe per ogni valore valido significativo;
-- almeno una classe per valore non appartenente all’insieme.
-
-Per booleani usa:
-
-- true;
-- false;
-- eventuale valore mancante/null se tecnicamente possibile.
-
-### 4. Choose test criterion
-
-Scegli il criterio in base alla richiesta dell’utente o al default.
-
-Criteri supportati:
-
-- N-WECT: coprire ogni classe di equivalenza almeno una volta.
-- R-WECT: coprire classi valide e isolare ogni classe non valida in un test separato.
-- ACoC / N-SECT: testare tutte le combinazioni delle classi.
-- Boundary Value Testing: usare min, min+, nom, max-, max.
-- Robustness Testing: usare min-, min, min+, nom, max-, max, max+.
-- Pairwise: usare quando ci sono molti parametri e interazioni a coppie plausibili.
-
-Se la scelta produce troppi test, segnala il problema e proponi un criterio più leggero.
-
-### 5. Refine combinations into concrete test inputs
-
-Trasforma le combinazioni astratte in valori concreti.
-
-Ogni caso di test deve avere:
-
-- ID;
-- tecnica usata;
-- input concreti;
-- classi di equivalenza coperte;
-- expected result;
-- motivazione;
-- eventuali note sui valori limite.
-
-Usa valori nominali per gli input non sotto test.
-
-### 6. Apply AAA structure
-
-Quando produci test implementabili, usa la struttura:
-
-- Arrange: prepara input, oggetti, stato o fixture.
-- Act: esegui la funzione/API/componente.
-- Assert: verifica output, eccezione, stato o messaggio di errore.
-
-## Modular testing modes
-
-### Mode: equivalence-classes
-
-Usalo quando l’utente vuole prima ragionare sulle partizioni.
-
-Output richiesto:
-
-1. tabella parametri;
-2. tabella classi di equivalenza;
-3. distinzione tra classi valide e non valide;
-4. valori rappresentativi.
-
-Non generare subito tutti i test se l’utente chiede solo le classi.
-
-### Mode: n-wect
-
-Usalo quando l’utente vuole una suite minima.
-
-Regole:
-
-- ogni classe di equivalenza deve comparire almeno una volta;
-- il numero di test tende alla cardinalità massima tra le caratteristiche;
-- combina più classi valide nello stesso test quando possibile;
-- segnala che il criterio assume input indipendenti e può perdere bug da interazione.
-
-### Mode: r-wect
-
-Usalo quando ci sono classi non valide importanti.
-
-Regole:
-
-- ogni classe valida deve essere coperta;
-- ogni classe non valida deve essere testata in isolamento;
-- nei test non validi, un solo parametro deve essere non valido;
-- gli altri parametri devono usare valori validi nominali;
-- i test non validi isolati non contano come copertura delle classi valide.
-
-### Mode: acoc
-
-Usalo quando l’utente vuole copertura forte o interazioni complete.
-
-Regole:
-
-- genera il prodotto cartesiano delle classi;
-- calcola il numero totale di test;
-- avvisa se c’è combinatorial explosion;
-- proponi Pairwise o R-WECT se il numero è troppo alto.
-
-### Mode: boundary-values
-
-Usalo per intervalli numerici, date, lunghezze, quantità, soglie o range.
-
-Regole:
-
-- per ogni variabile usa min, min+, nom, max-, max;
-- varia una variabile alla volta;
-- mantieni le altre al valore nominale;
-- numero atteso: 4n + 1.
-
-### Mode: robustness
-
-Usalo quando vuoi includere valori fuori limite.
-
-Regole:
-
-- per ogni variabile usa min-, min, min+, nom, max-, max, max+;
-- varia una variabile alla volta;
-- mantieni le altre al valore nominale;
-- numero atteso: 6n + 1.
-
-## Gotchas
-
-- Non confondere black-box testing con code coverage.
-- Non usare branch/path coverage come criterio principale: sono tecniche white-box.
-- Non assumere complete coverage: per sistemi non banali è impraticabile.
-- Non mescolare più input non validi nello stesso test R-WECT.
-- Non usare N-WECT quando i parametri sono chiaramente correlati senza segnalarne il limite.
-- Non generare ACoC se produce troppi test senza avvisare.
-- Per valori limite, non dimenticare il caso nominale con tutte le variabili nominali.
-- Per classi non valide, l’expected result deve specificare errore, eccezione, validazione fallita o risposta attesa.
-- Se i requisiti sono incompleti, dichiara le assunzioni usate.
-
-## Output format
-
-Quando l’utente chiede una progettazione completa, usa questa struttura:
-
-```markdown
-# Black-box test design: [nome funzionalità]
-
-## Requisiti assunti
-
-[Elenco sintetico delle regole funzionali usate]
-
-## Funzione / componente testato
-
-- Nome:
-- Descrizione:
-- Input:
-- Output atteso:
-- Vincoli:
-
-## Parametri
-
-| Parametro | Tipo | Dominio | Valore nominale | Note |
-|---|---|---|---|---|
-
-## Classi di equivalenza
-
-| ID | Parametro / caratteristica | Classe | Tipo | Valori rappresentativi | Expected behavior |
-|---|---|---|---|---|---|
-
-## Criterio scelto
-
-Tecnica: [N-WECT / R-WECT / ACoC / Boundary / Robustness / Pairwise]
-
-Motivazione:
-[Spiega brevemente perché questa tecnica è adatta]
-
-## Casi di test
-
-| Test ID | Tecnica | Input | CE coperte | Expected result | Motivazione |
-|---|---|---|---|---|---|
-
-## Note finali
-
-[Limiti, assunzioni, eventuali casi da aggiungere]
+Controllo finale:
 ```
 
-## Validation checklist
+Per una progettazione completa, struttura `Risultato` cosi:
 
-Prima di finalizzare, verifica:
+```text
+Funzione / componente testato:
 
-- [ ] La suite è black-box e non dipende dalla logica interna.
-- [ ] Tutti i parametri osservabili sono stati considerati.
-- [ ] Le classi di equivalenza sono disgiunte e coprono il dominio rilevante.
-- [ ] Le classi valide e non valide sono distinguibili.
-- [ ] Il criterio scelto è coerente con il rischio e il numero di combinazioni.
-- [ ] I test non validi sono isolati se si usa R-WECT.
-- [ ] I valori limite sono inclusi se ci sono range.
-- [ ] Ogni test ha input concreti ed expected result.
-- [ ] Le assunzioni sono dichiarate.
+Parametri:
 
-## When to load references
+Classi di equivalenza:
 
-Leggi `references/test-criteria.md` quando devi scegliere o confrontare tecniche di test.
+Criterio scelto:
 
-Leggi `references/output-template.md` quando devi produrre una tabella finale di test o casi implementabili.
+Casi di test:
+
+Note finali:
+```
+
+Per test implementabili, usa anche:
+
+```text
+Arrange:
+Act:
+Assert:
+```
+
+## Errori da evitare
+
+- Confondere black-box testing con white-box testing.
+- Usare branch/path/condition coverage come criterio principale black-box.
+- Trascurare input osservabili come stato esterno, file, configurazioni o parametri API.
+- Creare classi di equivalenza sovrapposte.
+- Lasciare buchi nel dominio rilevante.
+- Mischiare piu input non validi nello stesso test R-WECT.
+- Usare N-WECT senza segnalare limite su interazioni tra parametri.
+- Generare ACoC senza avvisare se i test diventano troppi.
+- Dimenticare valore nominale nei test boundary/robustness.
+- Dare expected result vaghi come "funziona".
+
+## Controllo finale
+
+Prima di concludere, verifica:
+
+- la suite e black-box;
+- funzioni testabili sono chiare;
+- tutti i parametri osservabili sono considerati;
+- classi di equivalenza sono disgiunte;
+- dominio rilevante e coperto;
+- classi valide e non valide sono distinguibili;
+- criterio scelto e motivato;
+- numero di test e dichiarato quando utile;
+- input concreti sono presenti;
+- expected result sono verificabili;
+- assunzioni e limiti sono dichiarati.
+
+## Quick Checklist
+
+```text
+[ ] Ho identificato funzioni o comportamenti testabili?
+[ ] Ho trovato tutti i parametri osservabili?
+[ ] Ho definito dominio, vincoli e valore nominale?
+[ ] Ho creato classi di equivalenza disgiunte?
+[ ] Ho distinto classi valide e non valide?
+[ ] Ho scelto criterio coerente col rischio?
+[ ] Ho isolato input non validi se uso R-WECT?
+[ ] Ho incluso boundary se esistono range?
+[ ] Ogni test ha input concreto?
+[ ] Ogni test ha expected result verificabile?
+[ ] Assunzioni e limiti sono dichiarati?
+```

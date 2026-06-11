@@ -1,278 +1,201 @@
 ---
 name: e2e-testing
-description: Progetta test end-to-end modulari per REST API e web application simulando flussi realistici dal punto di vista dell’utente finale. Usa questa skill per scenari E2E, test API reali, test browser, isolamento dei test, setup/cleanup e template AAA.
+description: >
+  Usa questa skill quando l'utente chiede di progettare test end-to-end per
+  REST API, API HTTP, web application o flussi misti simulando interazioni reali
+  da interfacce esterne. Serve per definire scenari E2E, setup, dati di test,
+  isolamento, cleanup, verifiche osservabili e casi Arrange/Act/Assert. Input
+  tipici: requisiti, endpoint, pagine, flussi utente, API, payload, stato
+  persistente, vincoli di autenticazione. Output atteso: piano E2E, scenari,
+  casi di test, strategia di isolamento, cleanup e assunzioni.
 ---
 
-# E2E Testing Skill
-
-## Goal
-
-Aiutare l’agente a progettare test End-to-End che verifichino il comportamento del sistema nel suo insieme, dal punto di vista dell’utente finale o del client esterno.
-
-La skill deve produrre scenari realistici, isolati, ripetibili e controllabili per:
-
-- REST API o API in generale;
-- web application tradizionali;
-- SPA;
-- flussi utente completi;
-- setup, cleanup e isolamento tra test.
-
-## When to use
-
-Usa questa skill quando l’utente chiede di:
-
-- progettare test E2E;
-- testare un flusso completo utente;
-- verificare una REST API tramite richieste HTTP reali;
-- verificare una web app tramite browser, click, input e navigazione;
-- scrivere scenari Playwright, Cypress, Selenium, Postman, Newman, pytest + requests o simili;
-- controllare login, registrazione, creazione/modifica/eliminazione risorse;
-- verificare che UI, backend e database lavorino correttamente insieme;
-- rendere i test indipendenti, isolati e ripetibili.
-
-Non usare questa skill per test unitari puri, test white-box, branch coverage, path coverage o test di singole funzioni isolate.
-
-## Core principle
-
-Un test E2E verifica il sistema completo attraverso le interfacce esterne.
-
-Il test deve simulare un utilizzo realistico:
-
-- per REST API o API, l’utente finale è un altro programma o servizio che invia richieste HTTP;
-- per web app, l’utente finale è una persona che interagisce con il browser;
-- il test deve controllare output osservabili: status code, body JSON, redirect, elementi UI, stato visibile, dati persistiti.
-
-Non basarti sulla struttura interna del codice, salvo per capire come avviare ambiente, seed dati o cleanup.
-
-## Default behavior
-
-Se l’utente non specifica il tipo di E2E:
-
-1. Usa REST API mode se l’input parla di endpoint, metodi HTTP, payload, token, status code o JSON.
-2. Usa sempre isolamento dei test come vincolo obbligatorio.
-3. Usa AAA come struttura di ogni test.
-4. Se il flusso modifica dati persistenti, prevedi setup e cleanup.
-
-## Workflow
-
-### 1. Identify user-level scenarios
-
-Individua gli scenari realistici da testare.
-
-Uno scenario E2E deve rappresentare un flusso completo, non una singola funzione interna.
-
-Esempi:
-
-- login riuscito;
-- login fallito;
-- registrazione nuovo utente;
-- creazione di un To-do;
-- modifica di un To-do;
-- eliminazione di un To-do;
-- accesso a risorsa protetta;
-- logout;
-- flusso completo: registrazione → login → creazione risorsa → verifica → cleanup.
-
-Per ogni scenario chiarisci:
-
-- attore;
-- obiettivo;
-- precondizioni;
-- azioni;
-- risultato atteso;
-- dati coinvolti;
-- cleanup necessario.
-
-### 2. Identify external interfaces
-
-Stabilisci da quali interfacce il test interagisce con il sistema.
-
-Per REST API/ API:
-
-- endpoint;
-- metodo HTTP;
-- headers;
-- payload;
-- query/path parameters;
-- status code atteso;
-- body atteso;
-- autenticazione;
-- eventuale persistenza verificabile.
-
-
-### 3. Define test data
-
-Ogni test deve avere dati controllati.
-
-Per evitare conflitti:
-
-- usa dati unici per ogni test;
-- preferisci username/email/titoli generati con suffisso casuale o timestamp;
-- non dipendere da dati creati da altri test;
-- non assumere ordine di esecuzione;
-- evita credenziali condivise se il test modifica lo stato dell’utente.
-
-Per test autenticati:
-
-- crea utente nel setup, oppure
-- usa fixture stabile solo se read-only, oppure
-- effettua login nel test e ottieni token/sessione.
-
-### 4. Design isolation strategy
-
-Ogni test E2E deve essere isolato.
-
-Regole obbligatorie:
-
-- un test che fallisce non deve sporcare quelli successivi;
-- i test devono poter girare in qualsiasi ordine;
-- i test devono poter girare in parallelo se l’infrastruttura lo consente;
-- ogni test deve partire da uno stato noto;
-- database, sessioni, local storage e cookie devono essere puliti o controllati.
-
-Strategie possibili:
-
-- reset database prima di ogni test;
-- transazione rollback, se supportata;
-- seed iniziale ripetibile;
-- cleanup via API dopo il test;
-- uso di dati unici e cancellazione finale;
-- container/database dedicato per test suite;
-- pulizia cookie/local storage/session storage per test web.
-
-Se l’utente non specifica strategia, proponi:
-
-- setup con dati unici;
-- cleanup esplicito dopo il test;
-- reset sessione/browser tra test.
-
-### 5. Write the E2E test plan
-
-Per ogni scenario produci:
-
-- ID test;
-- nome scenario;
-- tipo: REST API, Web App o Mixed;
-- precondizioni;
-- step;
-- input;
-- expected result;
-- cleanup;
-- note di isolamento.
-
-Gli step devono essere concreti e verificabili.
-
-### 6. Use AAA structure
-
-Quando generi test implementabili, organizza sempre in:
-
-- Arrange: prepara ambiente, dati, login, token, pagina iniziale.
-- Act: esegui il flusso utente/API.
-- Assert: verifica status, body, redirect, UI, dati persistiti.
-- Cleanup: elimina dati creati o resetta stato.
-
-Cleanup può stare dopo Assert o in hook dedicati come `afterEach`.
-
-## Modes
-
-### Mode: REST API/ API E2E
-
-Usalo quando l’interfaccia esterna è una REST API.
-
-Controlla sempre:
-
-- status code;
-- body JSON;
-- schema o campi obbligatori;
-- headers rilevanti;
-- autenticazione/autorizzazione;
-- effetti persistenti quando necessari.
-
-Esempio di flusso:
-
-1. POST `/auth` con credenziali valide.
-2. Verifica `200 OK`.
-3. Verifica presenza di `token`.
-4. Usa `Authorization: Bearer <TOKEN>` per chiamare endpoint protetti.
-5. Verifica risposta ed effetto della chiamata.
-
-Leggi `references/e2e-rest-api.md` quando devi progettare o scrivere test API.
-
-
-## Gotchas
-
-- Non confondere E2E con unit test: un E2E attraversa più componenti.
-- Non testare dettagli interni del codice.
-- Non fare dipendere un test dal successo di un test precedente.
-- Non riusare dati modificabili tra test paralleli.
-- Non lasciare dati sporchi nel database.
-- Non verificare solo `200 OK`: controlla anche body, stato visibile o persistenza.
-- Non usare sleep fissi nei test web se puoi aspettare condizioni osservabili.
-- Non rendere ogni test enorme: preferisci pochi flussi critici e realistici.
-- Non testare tutti i casi black-box tramite E2E: usa E2E per flussi principali, non per ogni combinazione di input.
-- Non salvare token/sessioni tra test senza pulizia.
-- Per login E2E, verifica sia successo sia almeno un fallimento significativo.
-- Per CRUD E2E, verifica almeno create/read/update/delete se sono flussi critici.
-
-## Output format
-
-Quando l’utente chiede una progettazione completa, usa:
-
-```markdown
-# E2E test design: [nome sistema/flusso]
+# E2E Testing
+
+## Quando usarla
+
+Usa questa skill quando l'utente vuole:
+
+- progettare test end-to-end;
+- testare un flusso completo dal punto di vista utente o client esterno;
+- verificare una REST API con richieste HTTP reali;
+- verificare una web app con browser, form, click, input e navigazione;
+- progettare test Playwright, Cypress, Selenium, Postman, Newman, pytest + requests o simili;
+- testare login, registrazione, logout, CRUD, risorse protette o flussi multi-step;
+- verificare integrazione tra UI, backend, API e persistenza;
+- rendere test isolati, ripetibili e indipendenti dall'ordine di esecuzione;
+- definire setup, cleanup, dati unici e strategia di isolamento.
+
+## Quando non usarla
+
+Non usare questa skill quando:
+
+- l'utente chiede test unitari puri;
+- l'utente chiede test black-box di singola funzione o combinazioni di input;
+- l'utente chiede white-box testing, branch coverage, path coverage o analisi CFG;
+- l'utente vuole solo mock isolati senza sistema reale;
+- mancano flusso utente/client, interfacce esterne o risultato osservabile;
+- la richiesta e solo debugging manuale senza progettazione test.
 
 ## Obiettivo
 
-[Spiega cosa viene verificato dal punto di vista dell’utente finale]
+L'obiettivo della skill e produrre:
 
-## Tipo di E2E
+- scenari E2E realistici e verificabili;
+- test che attraversano interfacce esterne osservabili;
+- piano con precondizioni, step, input, output attesi e cleanup;
+- strategia di isolamento tra test;
+- dati di test controllati e unici quando necessario;
+- casi Arrange/Act/Assert;
+- verifiche su status, body, redirect, UI, persistenza o stato visibile;
+- assunzioni e rischi dichiarati.
 
-[REST API / API]
+## Input richiesti
 
-## Interfacce esterne coinvolte
+L'utente dovrebbe fornire:
 
-| Interfaccia | Tipo | Descrizione |
-|---|---|---|
+- tipo di sistema: REST API, web app o mixed;
+- flusso utente o client da testare;
+- endpoint, pagine o interfacce esterne coinvolte;
+- input, payload, credenziali o dati necessari;
+- risultato atteso osservabile;
+- stato persistente da verificare;
+- vincoli di autenticazione/autorizzazione;
+- strategia test disponibile, se esiste: reset DB, fixture, seed, cleanup API, browser state;
+- tool desiderato, se serve codice implementabile.
 
-## Scenari
+Se manca un input non essenziale, fai una scelta ragionevole e dichiarala.
 
-| ID | Scenario | Attore | Precondizioni | Risultato atteso |
-|---|---|---|---|---|
+Se manca un input essenziale, chiedi chiarimento.
 
-## Strategia di isolamento
+## Procedura/workflow
 
-[Come ogni test parte da stato pulito e come viene fatto cleanup]
+1. Leggi attentamente la richiesta dell'utente.
+2. Identifica il tipo di task: piano E2E, scenari, test REST API, test web app, test mixed o codice implementabile.
+3. Controlla se la skill e adatta al caso.
+4. Raccogli interfacce esterne, flussi, dati, auth, stato persistente e output attesi.
+5. Identifica scenari user-level o client-level: ogni scenario deve rappresentare un flusso completo.
+6. Definisci attore, obiettivo, precondizioni, azioni, risultato atteso e cleanup.
+7. Identifica interfacce esterne coinvolte: endpoint, pagine, form, browser, token, headers, payload, DB osservabile.
+8. Definisci dati di test controllati e unici.
+9. Progetta isolamento: stato noto iniziale, cleanup, reset browser/sessione/database quando necessario.
+10. Scrivi casi con Arrange, Act, Assert e Cleanup.
+11. Verifica solo risultati osservabili dall'esterno, non dettagli interni del codice.
+12. Usa eventuali file in `references/` solo se servono.
+13. Produci l'output nel formato richiesto.
+14. Fai un controllo finale prima di rispondere.
 
-## Casi di test
+## Regole importanti
 
-| Test ID | Scenario | Arrange | Act | Assert | Cleanup |
-|---|---|---|---|---|---|
+- Mantieni la risposta chiara e ordinata.
+- Non aggiungere sezioni inutili.
+- Non inventare dati mancanti.
+- Segnala sempre eventuali assunzioni.
+- Segui il formato di output richiesto.
+- Usa esempi solo se aiutano davvero.
+- Non rendere la skill troppo generica.
+- Non confondere E2E con unit test.
+- Non testare dettagli interni del codice.
+- Non far dipendere un test dal successo di un test precedente.
+- Non riusare dati modificabili tra test paralleli.
+- Non verificare solo `200 OK`: controlla anche body, UI, redirect, persistenza o effetto osservabile.
+- Non usare sleep fissi nei test web se puoi aspettare condizioni osservabili.
+- Non lasciare dati sporchi nel database.
+- Ogni test deve poter partire da stato noto.
+- Ogni test deve avere cleanup esplicito o isolamento equivalente.
+- Se uno scenario modifica dati persistenti, prevedi dati unici e cleanup.
 
-## Note finali
+## Uso di references
 
-[Assunzioni, rischi, dati mancanti, casi futuri]
+Leggi queste reference solo quando utili:
+
+- `references/e2e-rest-api.md`: test REST/API, endpoint, HTTP, token, payload JSON, status code, persistenza.
+- `references/e2e-web-app.md`: test browser, pagine, form, click, redirect, selettori, attese e UI visibile.
+- `references/output-template.md`: template per scenario table, piano E2E completo, casi REST, casi web e tabella compatta.
+
+## Formato di output
+
+Restituisci il risultato in questo formato:
+
+```text
+Titolo:
+
+Input usati:
+
+Risultato:
+
+Assunzioni:
+
+Controllo finale:
 ```
 
-## Validation checklist
+Per un piano E2E completo, struttura `Risultato` cosi:
 
-Prima di finalizzare, verifica:
+```text
+Obiettivo:
 
-- [ ] Ogni test simula un flusso realistico.
-- [ ] Il test usa solo interfacce esterne osservabili.
-- [ ] Sono definiti input, azioni e risultato atteso.
-- [ ] Sono controllati status/body/UI/redirect/persistenza dove serve.
-- [ ] Ogni test è isolato.
-- [ ] Non esiste dipendenza dall’ordine di esecuzione.
-- [ ] I dati creati sono unici o puliti.
-- [ ] Cookie, sessioni e local storage sono gestiti.
-- [ ] Il cleanup è esplicito.
-- [ ] I test sono abbastanza pochi da essere mantenibili.
-- [ ] Gli scenari critici utente sono coperti.
+Tipo di E2E:
 
-## When to load references
+Interfacce esterne coinvolte:
 
-Leggi `references/e2e-rest-api.md` quando devi lavorare su endpoint REST, HTTP, token, payload JSON o status code.
+Scenari:
 
-Leggi `references/e2e-web-app.md` quando devi lavorare su browser, pagine, form, click, redirect o elementi UI.
+Strategia di isolamento:
 
-Leggi `references/output-template.md` quando devi produrre una tabella finale o test implementabili.
+Casi di test:
+
+Note finali:
+```
+
+Per test implementabili, usa:
+
+```text
+Arrange:
+Act:
+Assert:
+Cleanup:
+```
+
+## Errori da evitare
+
+- Testare una funzione interna invece di un flusso esterno.
+- Controllare solo status code o solo click senza risultato osservabile.
+- Dipendere da ordine di esecuzione dei test.
+- Usare dati condivisi modificabili.
+- Dimenticare cleanup o reset stato.
+- Usare selettori fragili legati al layout.
+- Usare sleep fissi invece di condizioni osservabili.
+- Coprire ogni combinazione black-box con E2E: gli E2E devono coprire flussi critici, non tutte le combinazioni.
+- Salvare token/sessioni tra test senza pulizia.
+- Nascondere assunzioni su utenti, DB, seed o ambiente.
+
+## Controllo finale
+
+Prima di concludere, verifica:
+
+- ogni test simula un flusso realistico;
+- interfacce esterne sono dichiarate;
+- input, azioni e expected result sono chiari;
+- verifiche osservabili sono presenti;
+- isolamento e cleanup sono definiti;
+- i test non dipendono dall'ordine;
+- dati creati sono unici o puliti;
+- sessioni, cookie e local storage sono gestiti quando serve;
+- assunzioni e rischi sono dichiarati;
+- output segue il formato richiesto.
+
+## Quick Checklist
+
+```text
+[ ] Ho identificato flussi utente/client realistici?
+[ ] Ho definito interfacce esterne?
+[ ] Ho indicato precondizioni e dati di test?
+[ ] Ho previsto autenticazione/autorizzazione se serve?
+[ ] Ho definito Arrange, Act, Assert e Cleanup?
+[ ] Ho verificato output osservabili?
+[ ] Ho verificato persistenza o stato visibile quando rilevante?
+[ ] Ogni test e isolato?
+[ ] I dati sono unici o puliti?
+[ ] I test non dipendono dall'ordine?
+[ ] Assunzioni e rischi sono dichiarati?
+```

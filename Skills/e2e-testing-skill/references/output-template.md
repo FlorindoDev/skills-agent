@@ -1,5 +1,7 @@
 # E2E Output Templates
 
+Usa questa reference quando devi produrre tabella finale, piano E2E completo o casi implementabili.
+
 ## Template: scenario table
 
 ```markdown
