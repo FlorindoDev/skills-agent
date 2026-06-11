@@ -4,12 +4,12 @@ Usa questa reference quando il codice nuovo rischia di introdurre cattivi odori 
 
 ## Regola di flessibilita
 
-Questa lista non e esaustiva. Se trovi uno smell o un micro-refactoring piu adatto al codice reale, usalo e spiega:
+Questa lista non e esaustiva. Usa queste tecniche come riferimento principale, ma se trovi uno smell, un micro-refactoring o un refactoring piu adatto al codice reale, usalo e spiega:
 
-- quale problema evita o riduce;
-- perche e migliore delle opzioni elencate;
-- come mantiene semplice il codice nuovo;
-- come preserva il comportamento gia esistente.
+- quale smell risolve;
+- perche e migliore delle tecniche elencate;
+- come preserva il comportamento gia esistente;
+- come verificarlo con test.
 
 ## Debito tecnico
 

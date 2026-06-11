@@ -4,13 +4,13 @@ Usa questa reference quando uno smell suggerisce un possibile design pattern. No
 
 ## Regola di flessibilita
 
-Questa lista non e esaustiva. Se trovi un pattern o una soluzione piu adatta al codice reale, usala e spiega:
+Questa lista non e esaustiva. Usa questi pattern come riferimento principale, ma se trovi un refactoring piu adatto al codice reale, usalo e spiega:
 
 - quale smell risolve;
-- perche e migliore dei pattern elencati;
+- perche e migliore delle tecniche o dei pattern elencati;
 - quale complessita introduce;
 - come preserva il comportamento osservabile;
-- come verificarla con test.
+- come verificarlo con test.
 
 ## Regola base
 

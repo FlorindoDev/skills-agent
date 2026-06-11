@@ -4,12 +4,14 @@ Usa questa reference quando devi classificare problemi nel codice prima di scegl
 
 ## Regola di flessibilita
 
-Questa lista non e esaustiva. Se trovi uno smell non presente qui, segnalalo comunque e spiega:
+Questa lista non e esaustiva. Usa questi smell e i refactoring indicati come riferimento principale, ma se trovi un refactoring piu adatto al codice reale, usalo e spiega:
 
-- perche e un problema reale nel codice;
-- quale impatto ha su leggibilita, manutenibilita, testabilita o rischio di modifica;
-- quale refactoring lo risolve;
-- come verificare che il comportamento osservabile resta uguale.
+- quale smell risolve;
+- perche e migliore delle tecniche elencate;
+- come preserva il comportamento osservabile;
+- come verificarlo con test.
+
+Se trovi uno smell non presente qui, segnalalo comunque e collega il refactoring al problema reale.
 
 ## Bloaters
 

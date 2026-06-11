@@ -4,12 +4,13 @@ Usa questa reference quando devi capire se il codice ha problemi di responsabili
 
 ## Regola di flessibilita
 
-Questi principi sono criteri guida, non una checklist chiusa. Se il codice reale richiede un criterio di design non presente qui, usalo e spiega:
+Questi principi sono criteri guida, non una checklist chiusa. Se trovi un criterio di design o un refactoring piu adatto al codice reale, usalo e spiega:
 
-- quale problema di design risolve;
-- perche e piu rilevante dei criteri elencati;
+- quale smell o problema di design risolve;
+- perche e migliore delle tecniche o dei criteri elencati;
 - quale trade-off introduce;
-- come preserva il comportamento osservabile.
+- come preserva il comportamento osservabile;
+- come verificarlo con test.
 
 ## Design goal e trade-off
 
